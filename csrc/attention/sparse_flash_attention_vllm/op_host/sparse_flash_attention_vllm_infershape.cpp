@@ -9,7 +9,7 @@
  */
 
 /*!
- * \file sparse_flash_attention_proto.cpp
+ * \file sparse_flash_attention_vllm_infershape.cpp
  * \brief
  */
 
@@ -123,7 +123,7 @@ ge::graphStatus InferDataTypeSparseFlashAttention(gert::InferDataTypeContext *co
     return ge::GRAPH_SUCCESS;
 }
 
-IMPL_OP_INFERSHAPE(SparseFlashAttention)
+IMPL_OP_INFERSHAPE(SparseFlashAttentionVllm)
     .InferShape(InferShapeSparseFlashAttention)
     .InferDataType(InferDataTypeSparseFlashAttention);
 } // namespace ops

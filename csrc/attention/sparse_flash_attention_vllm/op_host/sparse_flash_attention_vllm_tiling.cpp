@@ -9,7 +9,7 @@
  */
 
 /*!
- * \file sparse_flash_attention_tiling.cpp
+ * \file sparse_flash_attention_vllm_tiling.cpp
  * \brief
  */
 
@@ -21,7 +21,7 @@
 #include "err/ops_err.h"
 #include "register/op_def_registry.h"
 #include "../op_kernel/sparse_flash_attention_template_tiling_key.h"
-#include "sparse_flash_attention_tiling.h"
+#include "sparse_flash_attention_vllm_tiling.h"
 
 using std::map;
 using std::string;
@@ -2069,7 +2069,7 @@ ge::graphStatus SFAInfoParser::Parse(SFATilingInfo &sfaInfo)
     return ge::GRAPH_SUCCESS;
 }
 
-IMPL_OP_OPTILING(SparseFlashAttention)
+IMPL_OP_OPTILING(SparseFlashAttentionVllm)
     .Tiling(TilingSparseFlashAttention)
     .TilingParse<SparseFlashAttentionCompileInfo>(TilingPrepareForSparseFlashAttention);
 } // namespace optiling
