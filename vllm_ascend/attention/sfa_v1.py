@@ -779,7 +779,6 @@ class AscendSFAImpl(MLAAttentionImpl):
         # self.W_UV = maybe_trans_nz(self.W_UV)
 
         # Dispose kv_b_proj since it is replaced by W_UV and W_UK_T to save memory
-        dispose_layer(self.kv_b_proj)
         if self.enable_dsa_cp:
             if self.enable_dsa_cp_with_layer_shard:
                 for layer in self.layer_sharding_kwargs or []:
@@ -1501,6 +1500,7 @@ class AscendSFAImpl(MLAAttentionImpl):
 
         kw, _ = self.wk_weights_proj(x)
         weights = kw[:, self.head_dim :]
+        weights = weights * (self.n_head**-0.5) * (self.head_dim**-0.5)
         if isinstance(q_c, tuple):
             q_c_tensor, q_c_scale = q_c
             q_c_tensor = q_c_tensor.view(-1, q_c_tensor.shape[-1])
