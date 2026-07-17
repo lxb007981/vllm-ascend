@@ -564,7 +564,6 @@ class AscendSFAImpl(MLAAttentionImpl):
         # self.W_UV = maybe_trans_nz(self.W_UV)
 
         # Dispose kv_b_proj since it is replaced by W_UV and W_UK_T to save memory
-        dispose_layer(self.kv_b_proj)
         if self.enable_dsa_cp:
             if self.enable_dsa_cp_with_layer_shard:
                 for layer in self.layer_sharding_kwargs or []:
@@ -1012,6 +1011,7 @@ class AscendSFAImpl(MLAAttentionImpl):
     ):
         kw, _ = self.wk_weights_proj(x)
         weights = kw[:, self.head_dim :]
+        weights = weights * (self.n_head**-0.5) * (self.head_dim**-0.5)
         if isinstance(q_c, tuple):
             # MLAPO in C8 scenario already quantizes q_c to MXFP8 (fp8) with a per-token scale.
             # Skip wq_b's internal npu_dynamic_mx_quant and directly use the
