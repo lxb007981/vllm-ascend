@@ -84,6 +84,8 @@ if _V2_MODEL_RUNNER_SUPPORTED:
     import vllm_ascend.patch.worker.patch_v2.patch_block_table  # noqa
     import vllm_ascend.patch.worker.patch_v2.patch_attn_utils  # noqa
 
-# only patch routed experts capture in main2main.
-if _V2_MODEL_RUNNER_SUPPORTED:
-    import vllm_ascend.patch.worker.patch_routed_experts_capture  # noqa
+# Routed-expert capture is also used by the v0.23.0 v1 model runner. In
+# particular, Ascend ALLTOALL may unevenly split a DP rank's tokens across TP
+# ranks, so both floor- and ceil-sized shards must be accepted and gathered.
+# Keep this separate from the v2-only gate above.
+import vllm_ascend.patch.worker.patch_routed_experts_capture  # noqa
