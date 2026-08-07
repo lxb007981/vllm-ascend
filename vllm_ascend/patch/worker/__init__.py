@@ -23,8 +23,8 @@ from vllm_ascend.utils import is_310p, vllm_version_is
 # release. vLLM v0.22.1 and the verified main commit are diverged, and the v2
 # worker patches target main-only APIs; rather than maintain a separate v0.22.1
 # compatibility path we keep v2 main-only. With v0.22.1 installed this flag is
-# False, so none of the patch_v2.* / routed-experts-capture patches below are
-# imported and the v2 worker stays dormant (the release uses the v1 runner).
+# False, so none of the patch_v2.* patches below are imported and the v2 worker
+# stays dormant (the release uses the v1 runner).
 _V2_MODEL_RUNNER_SUPPORTED = not vllm_version_is("0.22.1")
 
 if HAS_TRITON:
@@ -69,6 +69,8 @@ if _V2_MODEL_RUNNER_SUPPORTED:
     import vllm_ascend.patch.worker.patch_v2.patch_block_table  # noqa
     import vllm_ascend.patch.worker.patch_v2.patch_attn_utils  # noqa
 
-# only patch routed experts capture in main2main.
-if _V2_MODEL_RUNNER_SUPPORTED:
-    import vllm_ascend.patch.worker.patch_routed_experts_capture  # noqa
+# Routed-expert capture is also used by the v0.22.1 v1 model runner. In
+# particular, Ascend ALLTOALL may unevenly split a DP rank's tokens across TP
+# ranks, so both floor- and ceil-sized shards must be accepted and gathered.
+# Keep this separate from the v2-only gate above.
+import vllm_ascend.patch.worker.patch_routed_experts_capture  # noqa
